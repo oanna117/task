@@ -120,7 +120,7 @@ function find_task_by_done($status)
     $stmt->execute();
 
     // 結果の取得
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);   //fetchAll : 連想配列(何件もデータがある場合)
 }
 
 // 受け取った id のレコードを取得
@@ -149,7 +149,7 @@ function find_task_by_id($id)
     $stmt->execute();
 
     // 結果の取得
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetch(PDO::FETCH_ASSOC);   //fetch : 配列(1件しかデータがない場合)
 }
 
 // タスク更新時のバリデーション
@@ -195,3 +195,27 @@ function update_task($id, $title)
     // プリペアドステートメントの実行
     $stmt->execute();
 }
+
+// タスク削除
+function delete_task($id)
+{
+    // データベースに接続
+    $dbh = connect_db();
+
+    // $id を使用してデータを削除
+    $sql = <<<EOM
+    DELETE FROM
+        tasks
+    WHERE
+        id = :id
+    EOM;
+
+    // プリペアドステートメントの準備
+    $stmt = $dbh->prepare($sql);
+
+    // パラメータのバインド
+    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+    // プリペアドステートメントの実行
+    $stmt->execute();
+} 
